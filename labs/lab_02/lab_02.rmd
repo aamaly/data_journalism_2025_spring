@@ -1,0 +1,150 @@
+---
+title: "lab_02"
+author: "Aamaly Hossain"
+date: "2025-09-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries and establish settings
+
+```{r}
+# Turn off scientific notation
+#options(scipen=999)
+
+# Load the tidyverse. If you have not installed the tidyverse already, remove the # from the next line and run it first.  
+#install.packages('tidyverse')
+library(tidyverse)
+library(lubridate)
+```
+
+## Load Data
+
+Let's keep working with the UMD courses and Maryland campaign expense data we used in the pre_lab.
+
+```{r}
+umd_courses <- read_rds("data/umd_courses.rds")
+maryland_expenses <- read_csv("data/maryland_expenses.csv")
+```
+
+## Answer questions
+
+**Q1.** How many departments have offered the courses with "Climate" in the title and at least one seat? Which department has offered the most? **A1.** 32 departments have offered courses with "Climate" in the title with at least one seat. Atmospheric and Oceanic Science Department has offered the most courses within the title of "Climate" -- at 93 courses. 
+
+```{r}
+#Filtering
+climate_courses <- umd_courses |>
+  filter(str_detect(title, "Climate") & seats > 0)
+
+#Counting how many departments offer the course with "Climate" in the title and at least one seat.
+climate_departments <- climate_courses |>
+  group_by(department) |>
+  summarise(
+    count_courses = n(),
+    ) |>
+  arrange(desc(count_courses))
+
+#Integer of number of departments
+nrow(climate_departments)
+
+#Name of the department with the most "Climate" titled courses.
+climate_departments |>
+  arrange(desc(count_courses))
+```
+
+**Q2.** Of the departments listed in A1, which one is the most interesting to you, and why? **A2.** I think it's really interesting that University Honors has the word "Climate" in 21 of its courses. I wasn't aware that the program offered that many climate-related courses, if any at all. Very cool! 
+
+**Q3** Which departments offered the most courses in the Fall 2024 term? And which departments in that term have at least one syllabus posted? Answer both of those questions and then compare the top five departments - how are they different?
+
+**A3.** The Business Management department has offered 174 courses in the Fall 2024 term, which is the most courses offered out of all department in that semester. School of Music offered 158 courses, Information Studies offered 137 courses, English offered 125 courses and Teaching and Learning, Policy and Leadership offered 117 courses --- all within the Fall 2024 term. There are 134 departments within UMD courses that have at least one syllabus posted in the Fall 2024 term. The Economics department has the most total syllabuses for this term at 378 syllabuses posted. Then, in descending order for total syllabuses count, includes Business Management (372 syllabuses), First-Year Innovation & Research Experience (227 syllabuses), Engineering (220 syllabuses) and Professional Masters (210 syllabuses). 
+
+I think it's interesting that Business Management is in the top five for both the most number of courses offered within the department and the most syllabi count. Additionally, Business Management ranked one in the most courses offered, but ranked two for the most syllabuses  posted, meaning the Economics department took the lead for the great number of syllabuses posted. I thought it was surprising that the Economics department only had 76 courses offered within the Fall 2024 term, but had 378 syllabuses posted, potentially hinting towards several sections opened within the courses. There could potentially be about four syllabuses for each course offered that semester, if it was split up evenly. On another note, looking at the top five departments in both datasets --- there are double the amount of syllabuses posted than class offered. Except for Business Management, all the other top five departments offering the most courses did not have the highest number of syllabuses posted, vice versa. 
+
+```{r}
+#Departments that offered most courses in Fall 2024 term
+fall_2024_courses <- umd_courses |>
+  filter(term == 202408) |>
+  group_by(department, term) |>
+  summarise(
+    count_courses = n()
+            )|>
+  arrange(desc(count_courses))
+
+nrow(fall_2024_courses)
+select(fall_2024_courses, term, count_courses)
+  
+#Departments that have at least 1 syllabus posted
+fall_2024_syllabi <- umd_courses |>
+  filter(term == 202408) |>
+  group_by(department, term) |>
+  summarise(
+    count_courses = n(),
+    total_syllabi = sum(syllabus_count, na.rm = TRUE)
+  ) |>
+  filter(total_syllabi > 0) |>
+  arrange(desc(total_syllabi))
+
+nrow(fall_2024_syllabi)
+select(fall_2024_syllabi, count_courses, total_syllabi, term)
+```
+
+**Q4.** Using the Maryland campaign expenses data, change the datatype of the expenditure_date column so that it is a date and not a chr, saving the result as a new dataframe. Then create a new column for the month based on expenditure_date. Then write code that shows total amount spent each month by Wes Moore's committee (you'll need to search the data to find the exact name, and we're not looking in payee_name). Write a sentence describing the pattern of spending over time. **A4.** Based on the monthly spending data for Gov. Wes Moore's committe, Moore Wes For Maryland, the patter shows that expenditures were relatively modest in the early months of the 2021 and 2022 fiscal year (May), gradually increased through 2021 and then surged dramaticlaly in 2022, peaking in October 2022, before declining again toward the end of the fiscal year. It's a clear pattern of ramping up spending as the campaign progressed, with the highest expenditures occuring in the months just before major events or elections.  
+
+```{r}
+maryland_expenses <- read_csv("data/maryland_expenses.csv")
+
+maryland_expenses_data <- maryland_expenses |> 
+  mutate(expenditure_date=mdy(expenditure_date)) 
+
+maryland_expenses_data |> 
+  mutate(month = floor_date(expenditure_date, "month")) |> 
+  group_by(month) |> 
+  summarise(total_amount = sum(amount)) |> 
+  arrange(desc(total_amount))
+
+nrow(month)
+
+wes_moore_spending <- maryland_expenses_data |>
+  filter(committee_name == "Moore  Wes For Maryland") |>
+  mutate(month = floor_date(expenditure_date, "month")) |> 
+  group_by(month, committee_name) |> 
+  summarise(total_amount = sum(amount)) |> 
+  arrange(month)
+
+select(wes_moore_spending, month, total_amount, committee_name)
+
+#Moore  Wes for Maryland -- committee_name
+```
+
+**Q5.** Using case_when(), create a column in the Maryland expenses data called `spending_location` indicating whether each record spent money in Maryland or outside Maryland. For records that are in Maryland, make the new column's value "In-state" and for all others, make it "Out of state". Then write code that shows the total amount of money spent in each category and describe the results. You can do this in one statement or break it up into two statements (saving the new column to your dataframe). **A5** The total amount spent in "In-state" locations, meaning Maryland, was 77,735,787 dollars and out of Maryland was 51,552,960 dollars. Most of the campaign spending occured within Maryland, accounting for about 60% of the total expenses. Out-of-state spending made up the remaining 40%, which is reflected in the purchases such as online services, printing and consulting from vendors outside of Maryland. 
+
+```{r}
+maryland_expenses_data <- maryland_expenses_data |>
+  mutate(
+    spending_location = case_when(
+        str_detect(address, "Maryland") ~ "In-state", TRUE ~ "Out of state"
+    )
+  )
+
+maryland_expenses_data |>
+  group_by(spending_location) |>
+  summarise(total_amount = sum(amount, na.rm = TRUE))
+
+view(maryland_expenses_data)
+```
+
+**Q6.** Choose your own adventure: using either the UMD courses or campaign expenses data, ask and answer a question that is different than the previous ones. You can use one of the ones you provided in the pre_lab. **A6.** My question was: Which department offers the most amount of courses that are only numbered 400? Based on the dataset, I found that the mechanical engineering department offers the most amount of courses within the 400-numbered courses at UMD. The department has offered 29 ENME400 courses in the range of 2017 and 2025 terms. The physics department has only offered ONE exactly 400-numbered course -- PHYS400. This makes for a very interesting understanding of which departments choose to offer many or not that many exactly 400 level courses. I assume that not many people take PHYS400 unless they are a physics major because the class size is also relatively small with only ten students, and one section available.    
+
+```{r}
+#Which department offers the most amount of courses that are strictly 400 numbered? 
+umd_courses |>
+  filter(str_detect(id, "400")) |>
+  group_by(id, department) |>
+  summarise(
+    count_courses = n()
+  ) |>
+  arrange(desc(count_courses))
+```
