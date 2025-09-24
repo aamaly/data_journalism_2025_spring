@@ -24,12 +24,262 @@ Consider this a personal guide to the commands and functions you will learn. In 
 The command to set a working directory is setwd(). For example, this sets the working directory to a directory called data_journalism_2024_fall inside a directory called jour472 located inside your home directory (the ~ is equivalent of /Users/[youruser] on a Mac).
 
 ```{r}
-setwd("~/jour472/data_journalism_2024_fall")
+#setwd("~/jour472/data_journalism_2024_fall")
 ```
 
 ### How to install and load the tidyverse
 
 ```{r}
-install.packages("tidyverse")
+#install.packages("tidyverse")
 library(tidyverse)
+```
+
+
+```{r}
+number <- 2
+#<- assigns a value (2) to a variable (number) so it can be reused later.
+
+
+
+number * number
+#* multiplies values; here it squares number to return 4.
+
+
+
+#install.packages("tidyverse")
+#install.packages() 
+#installs an external library so you can use its functions.
+
+
+
+library(tidyverse)
+#library() loads a library (like tidyverse) so its functions are available.
+
+
+
+#umd_courses <- read_rds("umd_courses.rds")
+#read_rds() loads an .rds file into R as a dataframe (here named umd_courses).
+
+
+
+#glimpse(umd_courses)
+#glimpse() shows variable names, types, and sample values for a dataframe.
+
+
+
+#head(umd_courses)
+#head() displays the first six rows of a dataframe.
+
+
+
+umd_courses |>
+  group_by(term) |>
+  summarise(count_classes = n())
+#"|>" pipes data forward, group_by() groups rows by a variable, and summarise() creates summaries (here n() counts rows).
+
+
+
+arrange(desc(count_classes))
+#arrange() sorts rows; desc() makes the order descending.
+
+
+
+summarise(total_seats = sum(seats))
+#sum() adds up all values in a column (here the total seats).
+
+
+summarise(mean_seats = mean(seats),
+         median_seats = median(seats))
+#mean() calculates the average; median() finds the middle value.
+
+
+
+summarise(minimum_seats = min(seats),
+          maximum_seats = max(seats))
+#min() finds the smallest value; max() finds the largest value.
+```
+
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set() sets options for RMarkdown code chunks (here, echo = TRUE means code is shown in the output).
+
+
+options(scipen=999)
+#options(scipen=999) turns off scientific notation so large numbers display normally.
+
+
+library(tidyverse)
+#Loads the tidyverse, a collection of R packages for data manipulation and visualization.
+
+
+library(lubridate)
+#Loads the lubridate package, which makes it easier to work with dates and times.
+
+
+#umd_courses <- read_rds("data/umd_courses.rds")
+#read_rds() reads an RDS file (binary R data format) into a dataframe.
+
+
+summary(umd_courses)
+#summary() gives basic stats for each column (min, mean, max for numbers; counts for categories).
+
+
+colnames(umd_courses)
+#colnames() lists the names of all columns in a dataframe.
+
+
+journalism_courses <- umd_courses |> filter(department == "Journalism")
+#filter() keeps only rows meeting a condition (here, department is "Journalism").
+
+
+courses_2025 <- umd_courses |> filter(term > 202500)
+#Filters to only rows where the term is greater than 202500.
+
+
+selected_journalism_courses <- journalism_courses |> select(id, title)
+#select() keeps only the chosen columns (id and title) while keeping all rows.
+
+
+theatre_seats_15 <- umd_courses |> filter(department == "Theatre") |> filter(seats >= 15)
+#Multiple filter() calls can be chained to narrow rows step by step.
+
+
+and_theatre_seats_15 <- umd_courses |> filter(department == "Theatre" & seats >= 15)
+#Using & (AND) in a single filter() combines multiple conditions at once.
+
+
+umd_courses |> filter(str_detect(title, "Shakespeare"))
+#str_detect() finds rows where a string column (title) contains a given word or pattern.
+
+
+#maryland_expenses <- read_csv("data/maryland_expenses.csv")
+#read_csv() reads CSV files into a dataframe (from the readr package).
+
+
+maryland_expenses <- maryland_expenses |> mutate(expenditure_date=mdy(expenditure_date))
+#mutate() creates or updates columns; here it converts a character date into a proper date using mdy().
+
+
+maryland_expenses |>
+  mutate(month = floor_date(expenditure_date, "month"))
+#floor_date() rounds a date down to the nearest unit (here, the first day of the month).
+
+
+general_22 <- read_csv('data/md_gov_county.csv')
+#Reads in county-level election results from CSV.
+
+
+general_22 <- general_22 |>
+  mutate(
+    total_votes = cox + moore + lashar + wallace + write_ins,
+    pct_moore = moore/total_votes
+  )
+#Creates new columns: total_votes adds up all candidate votes; pct_moore calculates Moore’s share.
+
+
+mutate(pct_moore = (moore/total_votes)*100)
+#Converts Moore’s share from a decimal to a percentage.
+
+
+arrange(desc(pct_moore))
+#arrange() sorts rows by a column; desc() puts them in descending order.
+
+
+arrange(pct_moore)
+#Same as above, but sorts ascending.
+
+
+mutate(payee_upper = str_to_upper(payee_name))
+#str_to_upper() converts all text in a column to uppercase for consistency.
+
+#Other similar functions:
+
+#str_to_lower() → makes text lowercase.
+
+#str_to_sentence() → makes only the first letter of the first word uppercase.
+
+
+mutate(
+  state = case_when(
+      str_detect(address, " Maryland ") ~ "MD",
+      str_detect(address, " California ") ~ "CA",
+      .default = NA
+    )
+)
+#case_when() creates new values conditionally: if an address contains a state name, it assigns the abbreviation; otherwise it assigns NA.
+
+group_by(state) |> summarize(total = sum(amount))
+#group_by() clusters rows by state; summarize() collapses each group into totals (here, total spending).
+```
+
+
+
+```{r}
+payments <- read_csv("data/file.csv", guess_max=10)
+#read_csv() reads a CSV file; the guess_max argument tells R how many rows to look at when guessing column types.
+
+problems(payments)
+#Shows parsing issues (e.g., if R misguessed a column’s type when reading in the file).
+
+glimpse(payments)
+#Gives a compact look at the dataframe: column names, data types, and sample values.
+
+group_by(`Vendor Zip`) |>
+  filter(str_length(`Vendor Zip`) < 5) |>
+  summarise(count=n()) |>
+  arrange(desc(count))
+#group_by() groups data by a variable.
+#filter() keeps only rows meeting a condition.
+#str_length() counts how many characters are in a string.
+#summarise(count=n()) counts the rows in each group.
+#arrange(desc(count)) sorts results in descending order.
+
+md_grants_loans <- read_csv("data/file.csv")
+#Reads another CSV into a dataframe.
+
+group_by(`Fiscal Year`, Category) |> summarize(count = n()) |> arrange(`Fiscal Year`)
+#Groups rows by fiscal year and category, counts them, then sorts by fiscal year.
+
+arrange(Amount)
+#Sorts all rows by the Amount column (ascending by default).
+
+install.packages("janitor")
+#Installs the janitor package, used for cleaning messy data.
+
+library(janitor)
+#Loads the janitor package.
+
+clean_names()
+#From janitor: standardizes column names (all lowercase, underscores instead of spaces).
+
+rename(source = grantor)
+#Renames a column (grantor) to a new name (source); new name goes first.
+
+mutate(source = str_to_upper(source), grantee = str_to_upper(grantee), description = str_to_upper(description))
+#mutate() changes or creates columns; str_to_upper() makes all text uppercase.
+
+get_dupes()
+#From janitor: finds duplicate rows in the dataframe.
+
+distinct()
+#Removes duplicate rows, keeping only unique ones.
+
+mutate(zip5 = str_sub(zip_code, start=1L, end=5L))
+#Creates a new column (zip5) that takes only the first 5 characters from the zip_code column.
+
+mutate(zip5 = case_when(
+  zip5 == "Vario" ~ NA,
+  zip5 == "UB7 O" ~ NA,
+  zip5 == "UB7 " ~ NA,
+  .default = zip5
+))
+#case_when() sets rules for recoding values: here, replacing bad zip codes with NA, otherwise keeping the original.
+
+filter(source == "COMMERCE/MARYLAND TOURISM BOARD") |>
+  group_by(zip5) |>
+  summarise(total_amount = sum(amount)) |>
+  arrange(desc(total_amount))
+#Filters rows to only Maryland Tourism Board, groups by zip code, calculates total amounts, and sorts from highest to lowest.
 ```
