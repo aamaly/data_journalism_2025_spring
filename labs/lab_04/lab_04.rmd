@@ -83,26 +83,69 @@ facebook_spending <- media_clean |>
   arrange(desc(total_amount)) |>
 
 print(facebook_spending)
+view(facebook_spending)
 ```
 
 **Q2.** Let's do some research on the top committees from question 1. Look up the top 10 spenders: if they are candidate committees, what offices were they running for? If they were not candidates, what issues do they seem to care about? Write some sentences answering those questions, then go the Facebook ad library ([https://www.facebook.com/ads/library/?active_status=all&ad_type=political_and_issue_ads&country=US&sort_data\\[direction\\]=desc&sort_data\\[mode\\]=relevancy_monthly_grouped&media_type=all](https://www.facebook.com/ads/library/?active_status=all&ad_type=political_and_issue_ads&country=US&sort_data%5Bdirection%5D=desc&sort_data%5Bmode%5D=relevancy_monthly_grouped&media_type=all){.uri}) and look for ads from the top spender. What do you notice about the the information provided about those ads?
 
-**A2.** Friends of Peter Franchot was a candidate committee for Peter Franchot who was running for Maryland governor in 2022. He was the former Maryland comptroller, and his committee is associated with his gubernatorial campaign activities. Franchot Anderson-Walker for Maryland Slate -- candidate slate for the 2022 Maryland gubernatorial ticket (Franchot for governor with Monique Anderson-Walker as running mate, Franchot tapped her in). Casa in Action PAC is not a candidate committee; it's the advocacy arm of CASA, focused on Latino immigrant communities and other minority groups, addressing issues such as immigration policy, health care access and civic engagement. CASA in action endorses political candidates that advance its membership's priorities and facilities. Friends of Ashwani Jain is a candidate committee. Ashwani Jain ran for Maryland governor, being on of the youngest candidates in history of the gubernatorial ticket. He has run for congressional seats in the past as well. WFP National Pac - Non-Contribution Account is not a single candidate committee. It is associated with the Working Families Party (progressive party/PAC) and typically spends on labor, economic-justice and progressive issue advocacy and campaigns. Friends of Billy Boniface is a candidate committee. Billy Boniface ran for County Executive in Harford County in 2022, and obviously this committee supported his campaign. King and Siri for Maryland Slate is a candidate slate. Gubernatorial candidate for Maryland governor John King Jr. and running mate Michelle Siri's committee campaigning in support. Jon (Jonathan) Baron for Maryland is a candidate committee. Jon Baron ran a campaign for Maryland governor in 2022 (he positioned himself as a candidate in that cycle). Friends of Amanda Fiedler is a candidate committee. Fiedler is an Anne Arundel County elected official/county council candidate; the committee is tied to her local campaigns. Friends of Robin L. Grammer Jr. is a Maryland state delegate (House of Delegates); this was his campaign committee. He was running as an incumbent for the 2022 election, which he won. His term ends 2027. From Franchot, those ads were all removed, but the committee spent roughly five hundred dollars for each ad, but it did get a hundreds of thousands of reach. Sometimes, over a thousand dollars were spent just on an ad that is now removed. There are plenty of them, dating back to 2019! This was the case for the him and his running mate's committee as well. Most of these top spenders pay hundreds of dollars for these ads that reach 100K to 500K people, and recieve 50K to 60K impressions. And often times these ads become inactive if the candidate did not win or it just isn't running anymore.  
+**A2.** Friends of Peter Franchot was a candidate committee for Peter Franchot who was running for Maryland governor in 2022. He was the former Maryland comptroller, and his committee is associated with his gubernatorial campaign activities. Franchot Anderson-Walker for Maryland Slate -- candidate slate for the 2022 Maryland gubernatorial ticket (Franchot for governor with Monique Anderson-Walker as running mate, Franchot tapped her in). Casa in Action PAC is not a candidate committee; it's the advocacy arm of CASA, focused on Latino immigrant communities and other minority groups, addressing issues such as immigration policy, health care access and civic engagement. CASA in action endorses political candidates that advance its membership's priorities and facilities. Friends of Ashwani Jain is a candidate committee. Jain ran for Maryland governor, being on of the youngest candidates in history of the gubernatorial ticket. He has run for congressional seats in the past as well. WFP National Pac - Non-Contribution Account is not a single candidate committee. It is associated with the Working Families Party (progressive party/PAC) and typically spends on labor, economic-justice and progressive issue advocacy and campaigns. Friends of Billy Boniface is a candidate committee. Boniface ran for County Executive in Harford County in 2022, and obviously this committee supported his campaign. King and Siri for Maryland Slate is a candidate slate. Gubernatorial candidate for Maryland governor John King Jr. and running mate Michelle Siri's committee campaigning in support. Jon (Jonathan) Baron for Maryland is a candidate committee. Baron ran a campaign for Maryland governor in 2022 (he positioned himself as a candidate in that cycle). Friends of Amanda Fiedler is a candidate committee. Fiedler is an Anne Arundel County elected official/county council candidate; the committee is tied to her local campaigns. Friends of Robin L. Grammer Jr. is a Maryland state delegate (House of Delegates); this was his campaign committee. He was running as an incumbent for the 2022 election, which he won. His term ends 2027. From Franchot, those ads were all removed, but the committee spent roughly five hundred dollars for each ad, but it did get a hundreds of thousands of reach. Sometimes, over a thousand dollars were spent just on an ad that is now removed. There are plenty of them, dating back to 2019! This was the case for Franchot and his running mate's committee as well. Most of these top spenders pay hundreds of dollars for these ads that reach 100K to 500K people, and recieve 50K to 60K impressions. And often times these ads become inactive if the candidate did not win or if it just isn't running anymore.  
 
 **Q3.** Given the list of top spenders in A1 and the primary results for governor (<https://elections.maryland.gov/elections/2022/primary_results/gen_results_2022_1.html>), who is missing from that Q1 list? Did those campaigns run Facebook ads? Who are the biggest recipients of media expenses by the Democratic primary winner for governor (HINT: that person has two committees, the second one with his running mate)?
 
-**A3.**
+**A3.** All the republican candidates for Maryland governor were missing in the Q1 list as well as the following Democratic candidates: Baker III, Gansler, Jaffe, Moore, Perez and Segal. Based on Q1, these candidate campaigns probably didn't run Facebook ads at the time this data was collected. For instance, Gov. Wes Moore has several ads paid for through Wes Moore for Maryland, but those are all in 2025, and there are very few in 2022, but there is no amount paid listed on the ad. So, it probably wasn't included in the dataset. There's also other names listed with Wes Moore such as, "By Authority: Wes Moore for Maryland, Mary Tydings, Treasurer." The biggest recipients of media expenses by Gov. Wes Moore and his running mate was SKDK, a top democratic public affairs firm, receiving a total amount of $3,450,401.91. That total was from the Moore Miller For Maryland Slate campaign, but Wes Moore for Maryland also spent 3,270.76 dollars on SKDK for his own campaign. 
 
 ```{r}
+moore_media <- refined_media_expenses |>
+  filter(
+    expense_category == "Media",
+    str_detect(committee_name, "Moore")
+  )
+
+moore_media_recipients <- moore_media |>
+  group_by(payee_clean, committee_name) |>
+  summarise(
+    total_amount = sum(amount)
+  ) |>
+  arrange(desc(total_amount))
+
+print(moore_media_recipients)
 ```
 
 **Q4.** The media expense data you cleaned also has a standardized purpose column. Write code to generate a list of the committees with the total amount of spending on online advertising. How does this list compare to the one from Q1 about top Facebook spenders? Of the top 5 committees who spent the most on Facebook ads from Q1, are there any that appear to have spent *all* of their online advertising dollars on Facebook?
 
-**A4.**
+**A4.** Now there are 407 rows of committees versus the 149 for the Facebook advertising. I think this shows a more holisitc version of committees who spent a great deal on advertising that might not have necessarily been through Facebook. We have some new committees at the top. Franchot is not in the top 10. Instead, at the top we have Democratic Senate Caucus Committee Maryland, which spent $311,557.00 on online advertising. However, CASA in action and John King's campaign (not the one with his running mate, though) still remain in top 10. With that said, the top three don't seem to be candidate campaign committees, but more so PAC's or other political committees spending money on online advertising. Of the top five committees, Franchot Anderson-Walker for Maryland Slate and Friends of Ashwani Jain spent all their online advertising dollars on Facebook. 
 
 ```{r}
+online_ads <- refined_media_expenses |>
+  filter(str_detect(expense_purpose, regex("Online", ignore_case = TRUE))) |>
+  group_by(committee_name) |>
+  summarise(
+    total_amount = sum(amount)
+  ) |>
+  arrange(desc(total_amount))
+
+print(online_ads)
+
+comparison <- facebook_spending |>
+  select(committee_name, facebook_spending = total_amount) |>
+  left_join(online_ads, by = "committee_name") |>
+  mutate(
+    percent_facebook = round(facebook_spending / total_amount * 100, 1)
+  ) |>
+  arrange(desc(facebook_spending))
+
+print(comparison)
+
 ```
 
 **Q5** Your editor asks you to summarize your findings about spending on Facebook by Maryland political candidates. How much do we know and what don't we know? What's the best story idea you've found here?
 
-**A5**
+**A5** From this analysis, we know some Maryland political committees collectively spent tens of thousands of dollars on Facebook advertising during the 2022 election cycle, with Friends of Peter Franchot and Franchot Anderson-Walker for Maryland Slate leading in overall spending. Several gubernatorial candidates -- including Ashwani Jain, Jon Baron and John King Jr. -- also devoted large portions of their media budgets to Facebook ads. These results show that Facebook remained a major platform for political communication in Maryland, especially for campaigns trying to build name recognition and engage voters online. 
+
+However, we don't know exactly what content these ads promoted, how effective they were or the demographics they targeted (some committees had inactive/removed ads in the Facebook ad library). The state data only shows spending, not performance or messaging. the Facebook Ad Library fills in some of that context, but not all ads disclose full cost details or targeting information. 
+
+The data shows that Facebook was still a central hub for Maryland campaign advertising in 2022, but its also highlights a digital divide in political strategy. Larger, well-funded campaigns like Wes Moore for Maryland, Franchot Anderson-Walker for Maryland Slate and Casa in Action PAC diversified its media spending across multiple online and traditional platforms, while smaller or newer candidates -- such as Ashwani Jain -- spent nearly all their digital budgets on Facebook advertising. This could potentially show that campaign resources and name recognition shape how candidates use online tools to reach voters. What's missing from the data is insight into how effective this spending actually was -- did it reach its target audience, did the committee achieve what they wanted? 
+
+A strong story idea could be how Maryland's 2022 campaigns revealed two different playbooks for media advertising, a digital divide. 
+
+The story could reveal how established campaigns use broad, multi-platform strategies (even top-notch media firms like Wes Moore), while underdog candidates leaned almost entirely on Facebook as an affordable (maybe, but seems very expensive to me nonetheless) outreach tool. It could also investigate whether this spending translated into visibility or votes. Really, a look at how digital campaign strategies are evolving Maryland politics. 
