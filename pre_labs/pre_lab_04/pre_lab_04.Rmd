@@ -98,7 +98,7 @@ cleaned_md_grant_loans |>
 
 ### Task 7: Use a different refinr method to clean the city_clean field.
 
-**Task** Run the following code to use the n_gram_merge() function to clean the data, then group by grantee_clean and Grantee to examine recipients that start with W. Look at the differences. Does the changes it made vary substantially from the previous use of key_collision_merge? **Answer** No, the changes made with n_gram_merge is not very different from the key_collision_merge. I think these two are pretty similar in changes made. 
+**Task** Run the following code to use the n_gram_merge() function to clean the data, then group by grantee_clean and Grantee to examine recipients that start with W. Look at the differences. Does the changes it made vary substantially from the previous use of key_collision_merge? **Answer** No, the changes made with n_gram_merge is not very different from the key_collision_merge. I think these two are pretty similar in changes made. However, changes were not made in every case, nor are they uniform to the other rows. So it's not technically clean. 
 
 ```{r}
 cleaned_md_grant_loans <- md_grant_loans |>
