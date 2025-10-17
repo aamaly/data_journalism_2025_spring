@@ -1,0 +1,38 @@
+---
+title: "Reverse Engineering Project"
+name: "Aamaly Hossain"
+date: "2025-10-16"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Turn off scientific notation
+options(scipen=999)
+
+# Load the tidyverse, plus any other packages you will need to clean data and work with dates.
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(readr)
+```
+
+Sentences we are using from the LA Times article: 
+1. 
+2. 
+3.
+4. 
+5. 
+
+```{r}
+
+```
+
+
