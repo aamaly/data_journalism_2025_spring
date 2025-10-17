@@ -1,7 +1,7 @@
 ---
 title: "Reverse Engineering Project"
-author: "Student names here"
-date: "Date here"
+author: "Aamaly Hossain"
+date: "2025-10-16
 output:
   html_document:
     theme: cerulean
@@ -18,14 +18,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction 
 
-In this notebook, we are reverse engineering the story, [STORY NAME](STORY URL)
+In this notebook, we are reverse engineering the story, [L.A. is slammed with record costs for legal payouts](https://www.latimes.com/local/lanow/la-me-ln-city-payouts-20180627-story.html)
 
 ## Load libraries
 
 Loading required libraries for this analysis.
 
 ```{r echo=FALSE, message=FALSE}
+options(scipen=999) 
 
+library(readr)
+library(tidyverse)
+library(lubridate)
+library(janitor)
 ```
 
 ## Load and Cleaning Data
@@ -36,6 +41,21 @@ In this section, describe the source of the data, write a basic data dictionary 
 # Load required data
 
 # Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
+casetypes <- read_csv("/Users/aamalyhossain/Documents/GitHub/data_journalism_2025_spring/major_assignments/reverse_engineering/data/casetypes.csv")
+View(casetypes)
+
+department_totals <- read_csv("/Users/aamalyhossain/Documents/GitHub/data_journalism_2025_spring/major_assignments/reverse_engineering/data/department-totals.csv")
+View(department_totals)
+
+departments <- read_csv("/Users/aamalyhossain/Documents/GitHub/data_journalism_2025_spring/major_assignments/reverse_engineering/data/departments.csv")
+View(departments)
+
+payouts <- read_excel("/Users/aamalyhossain/Documents/GitHub/data_journalism_2025_spring/major_assignments/reverse_engineering/data/payouts.xlsx")
+View(payouts)
+
+type_totals <- read_csv("/Users/aamalyhossain/Documents/GitHub/data_journalism_2025_spring/major_assignments/reverse_engineering/data/type-totals.csv")
+View(type_totals)
+
 
 # Clean required data and prepare for analysis if needed. 
 
@@ -47,7 +67,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 1
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Beyond the mammoth cases, a pileup of other large payouts has padded the tab, a Times analysis of city payouts found.**: [Paste in sentence to engineer here]
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
@@ -59,7 +79,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 2
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Last budget year, the city paid out 30 settlements of $1 million or more — five times as many as a decade before.**: [Paste in sentence to engineer here]
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
@@ -71,7 +91,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 3
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **The Times analyzed a city database listing more than 18,000 payouts dating back to July 2005, obtained through a public records request.**: [Paste in sentence to engineer here]
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
@@ -83,7 +103,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 4
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Thousands of legal battles involving the Los Angeles Police Department … have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed.**: [Paste in sentence to engineer here]
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
@@ -95,7 +115,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 5
 
-* **Sentence text**: [Paste in sentence to engineer here]
+* **Legal payouts for ‘dangerous conditions’ have rivaled and, last budget year, even exceeded the cost of lawsuits over police misconduct, the analysis found.**: [Paste in sentence to engineer here]
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
