@@ -69,6 +69,8 @@ baltimore_911 <- baltimore_911 |>
 
 baltimore_joined <- baltimore_911 |>
   left_join(maryland_zcta, by = c("zip_code" = "zcta5n"))
+
+baltimore_joined
 ```
 
 ## Answer questions
@@ -92,9 +94,32 @@ Q2. In your combined dataframe that you used in A1, add a column for the month o
 
 Then calculate the most calls per county and location. Which location had the most calls - where and what is that location?
 
-A2.
+A2. Across Allegany, Carroll and Cecil counties, the number of 911 calls generally followed a consistent seasonal pattern, with higher call volumes during the late spring and summer months and lower numbers in the winter (ranging in the mid 20s to mid 40s). Allegany County showed a steady increase through the spring, peaking at 50 calls in August before dropping to its lowest point of 17 in November, which is an outlier, along with its 18 calls in January. Carroll County's call volume remained relatively stable throughout the year, ranging between 30 and 45 calls per month, without any major fluctuations. Cecil County displayed a similar trend overall but had a noticeable spike in August, reaching 55 calls -- the highest monthly total among the three counties -- which stands out as a clear outlier. 911 call activity across all three counties tended to rise during warmer months and taper off toward the end of the year, showing a typical seasonal variation in emergency call patterns. Additionally, Cecil County had the most calls (15) coming from 314 GROVE NECK RD EARLEVILLE, MD. I believe this is a rehab center called Recovery Centers of America at Bracebridge Hall, a residential and outpatient addiction treatment center. 
 
 ```{r}
+total_911_county <- county_911_combined |>
+  mutate(
+    date = as.Date(date), 
+    month = floor_date(date, "month")
+  ) |>
+  group_by(county, month) |>
+  summarise(
+    total_calls = n(),
+    .groups = "drop"
+  ) |>
+  arrange(county, month)
+
+total_911_county
+
+most_calls_location <- county_911_combined |>
+  group_by(county, location) |>
+  summarise(
+    total_calls = n(),
+    .groups = "drop"
+    ) |>
+  arrange(desc(total_calls))
+
+most_calls_location
 ```
 
 Q3. Let's turn to the Baltimore City data. You're interested in exploring calls in zip codes with a high percentage of children under 18. Write code to isolate calls in zip codes where the percentage of under 18 population is at least 75% and then show the zip code and population and how many calls occurred in each of those zip codes.
@@ -105,14 +130,51 @@ Add a column to your code that calculates the number of calls per 1,000 people f
 
 Which zip code has the highest rate of calls per 1,000 people? Find the neighborhoods in that zip code that are listed in the data - you can use group_by or distinct to do this. What are some of those neighborhoods, and what else can you tell me about the population there?
 
-A3.
+A3. The zip codes are: 21217 (West-Central Baltimore), 21223 (Southwest Baltimore), 21202 (Central-East-Central Baltimore), 21213 (East Baltimore), 21201 (Central/West-Central Baltimore), 21216 (Northwest/West Baltimore), 21205 (East Baltimore). West-Central Baltimore, which falls under 21217 zip code has the highest rate of calls per 1,000 people at roughly 21%. Some neighborhoods that are in the zip code -- 21217 -- are Penn North, Harlem Park, Druid Heights, Bolton Hill	and Reservoir Hill. Roughly 30,448 people live in the area, according to a 2020 U.S. Census Data report. Another source, Census Reporter, states there is a population of 31,125 people in that area. Additionally, this area has a high proportion of children and families, contributing to its elevated per-capita call rate of nearly 21% calls per 1,000 people -- the highest among Baltimore City zip codes in the dataset. These neighborhoods have historically faced socioeconomic challenges, including high poverty rates, housing density and limited access to resources, which could explain the higher frequency of 911 calls relative to population size. The largest racial group is predominately Black, approximately 60%, according to the U.S. Census Bureau. The median age is around 40 and the median household income is about $37,207. 
 
 ```{r}
+baltimore_children <- baltimore_joined |>
+  filter(pct_under_18 >= 75) |>
+  group_by(zip_code, population) |>
+  summarise(total_calls = n()) |>
+  mutate(calls_per_1000 = (total_calls / population) * 1000) |>
+  arrange(desc(calls_per_1000))
+
+baltimore_children
+
+top_zip_neighborhoods <- baltimore_joined |>
+  filter(zip_code == "21217") |>
+  distinct(neighborhood)
+
+top_zip_neighborhoods
 ```
 
 Q4. Choose your own adventure: I want you to come up with a question you could ask of the Baltimore City data that combines both the calls and the demographic information. You must use both demographics and the overdose call data in your work.
 
-A4:
+A4: Which racial group has the highest number of calls in Baltimore City, and which zip code does it fall into? 
+
+Based on this dataframe, the racial group associated with the highest number of calls is Black residents. The zip code with the most calls is 21217, which had a total of 774 calls. Again, this is in the neighborhoods of the previous question. In this zip code, 86.4% of the population is Black, while only 9.4% is White and the remaining percentages are made up of other racial and ethnic groups. This indicates that the area with the highest call volume is predominately Black, showing a strong overlap between high call counts and the Black population in the city. Other zip codes with high call counts, such as 21223 (525 calls) and 21215 (500 calls), also have high percentages of Black residents (74.8% and 81.1%), further supporting this pattern. 
 
 ```{r}
+calls_per_zip <- baltimore_joined |>
+  group_by(
+    zip_code,
+    pct_white_non_hispanic,
+    pct_black_non_hispanic,
+    pct_native,
+    pct_asian,
+    pct_hawaiian,
+    pct_other,
+    pct_hispanic) |>
+  summarise(
+    total_calls = n(), 
+    .groups = "drop")
+calls_per_zip
+
+top_zip <- calls_per_zip |>
+  arrange(desc(total_calls))
+
+View(top_zip)
+
+head(top_zip)
 ```
