@@ -1,0 +1,174 @@
+---
+title: "lab_07"
+author: "Aamaly Hossain"
+date: "2025-10-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## You will need
+
+-   A Census API key
+
+## Load libraries and establish settings
+
+You'll need to load two packages for this: the tidyverse and tidycensus.
+
+**Task** load these two packages
+
+```{r}
+# Turn off scientific notation
+options(scipen=999)
+
+# Load the tidyverse.
+library(tidyverse)
+library(tidycensus)
+library(janitor)
+library(readr)
+library(lubridate)
+```
+
+## Setup Census API
+
+You'll need your Census API Key:
+
+**Task** set your API Key if you haven't already. You won't need to install or overwrite it.
+
+```{r echo=FALSE}
+#census_api_key("5f1b0191937344c7555fa83bfd1c93a7c042f1c3", install=TRUE)
+```
+
+## Load and view ACS variables
+
+You'll also need to load the list of American Community Survey variables from the 2023 5-year estimates so you can identify the codes you need:
+
+**Task** load the variables from the 2023 5-year ACS (which is called "acs5") and save them to a dataframe
+
+```{r}
+acs5 <- load_variables(2023, "acs5", cache = TRUE)
+View(acs5)
+```
+
+## Answer questions
+
+**Q1** What is the Maryland jurisdiction with the lowest median age, according to the ACS 2023 5-year estimates? You will need to find the variable for median age first. **A1** Baltimore City has the lowest median age, according to the ACS 2023 5-year estimates. The estimated median age is about 36 years old, but there is a 0.2 margin of error. 
+
+```{r}
+median_age_var <- "B01002_001"
+
+md_median_age <- get_acs(
+  geography = "county",
+  variables = median_age_var,
+  state = "MD",
+  year = 2023
+)
+
+lowest_median_age <- md_median_age |>
+  filter(estimate == min(estimate))
+
+lowest_median_age
+```
+
+**Q2** Which Maryland counties have a median age of at least 50? You can use the dataframe you just made to answer this, but you must write code to display only those counties with a median age of at least 50. **A2** Based on the code, the counties that have a median age of at least 50 are Talbot County and Worcester County with about a median age of 51 and 50 respectively. There is a 0.4 margin of error. 
+
+```{r}
+md_median_50plus <- md_median_age |>
+  filter(estimate >= 50)
+
+md_median_50plus
+```
+
+**Q3** We're interested in knowing more about Montgomery County zip codes where overdose calls are coming from and the demographic characteristics they possess. In particular, we want to calculate a rate of calls per 1,000 population. To do this, you'll need to:
+
+1.  Load the Montgomery County 911 overdose calls data.
+2.  Create a new dataframe with the total number of calls for each zip code.
+3.  Find the ACS variable pertaining to the total 18 and up population (there are several choices here; you want the simplest one).
+4.  Get from the ACS data from all Maryland zip codes using that variable - you will need to specify an earlier year to get the data.
+5.  Join the ACS data to the Montgomery County zip code totals dataframe and rename the estimate column to a meaningful name you've given the ACS variable.
+6.  Add a column to the joined dataframe that calculates a rate of calls per 1,000 population.
+
+Which zip code has the highest rate of calls? Which has the lowest?
+
+**A3** 20874 has the highest rate of calls, nearly 12% of the total population in Montgomery County. Besides 20889 that is not applicable with the rate of calls and total population, 20707 has the lowest rate of calls, making up merely 0.2%. 
+
+```{r}
+montgomery_2022_overdoses <- read_csv("data/montgomery_2022_overdoses.csv")
+
+montgomery_zip_calls <- montgomery_2022_overdoses |>
+  group_by(zip) |>
+  summarise(
+    total_calls = n()
+  ) |>
+  arrange(desc(total_calls))
+
+montgomery_zip_calls <- montgomery_zip_calls |>
+  mutate(zip = str_pad(zip, 5, pad = "0"))
+
+montgomery_zip_calls
+
+acs_pop_18plus <- get_acs(
+  geography = "zcta",
+  variables = "B09020_002",
+  year = 2019
+) |>
+  select(GEOID, NAME, total_pop = estimate)
+
+acs_pop_18plus
+
+montgomery_zip_calls <- montgomery_zip_calls |>
+  left_join(acs_pop_18plus, by = c("zip" = "GEOID"))
+
+montgomery_zip_calls
+
+montgomery_zip_calls <- montgomery_zip_calls |>
+  mutate(
+    calls_per_1000 = (total_calls / total_pop) * 1000
+  ) |>
+  arrange(desc(calls_per_1000))
+
+montgomery_zip_calls
+
+```
+
+**Q4** Using [CensusReporter.org](https://censusreporter.org/), examine the zip codes with the highest and lowest rates and compare and contrast their demographic profiles. Is there a story here?
+
+**A4** The zip code with the highest rate of calls, 20874, has a younger and more diverse population with a mix of White, Black and Hispanic residents. It tends to be more densely populated and has a lower median age compared to other Montgomery County zips. On the other hand, the zip code with the lowest rate, 20707, has an older population, is less densley populated and has a higher proportion of White residents. This potentially shows that demographics such as age, population density and diversity may influence the rate of calls, emphasizing areas where targeted public health interventions could be especially variable. Even though both zip codes are affluent, 20874 has a younger, denser, more diverse population, which may correlate with higher call rates. 20707 has an older, less diverse, population with more people in professional/management roles which may correlate with lower call rates. I think there could be a solutions story here on what could be done to find an answer or solution to help those residents in the zip code with the highest rate of calls --- possibly a targeted public health outreach. 
+
+**Q5** Go back to your joined dataframe from Q3 and add two more columns representing the minimum and maximum populations based on the estimate and margin of error, then calculate per capita rates for each. Do you get the same two zip codes for the highest and lowest as you did before? Does that give you more or less confidence in your answers to Q3?
+
+**A5** The same zip codes remain the highest and lowest: 20874 has the highest per-capita rate and 20707 has the lowest per-capita rate. I have a bit more confidence in my answers to Q3, however, there seems to be overlaps with the margin of errors for some of the zip codes. This makes me a bit weary to know for sure if the highest and lowest call rates are statistically significance. 
+
+```{r}
+
+montgomery_zip_calls <- montgomery_2022_overdoses|>
+  group_by(zip) |>
+  summarise(total_calls = n()) |>
+  ungroup() |>
+  mutate(zip = str_pad(as.character(zip), 5, pad = "0"))
+
+acs_pop_18plus_moe <- get_acs(
+  geography = "zcta",
+  variables = "B09020_002",
+  year = 2019
+) |>
+  mutate(GEOID = as.character(GEOID)) |>
+  select(zip = GEOID, total_pop_acs = estimate, moe_acs = moe)
+
+montgomery_zip_calls <- montgomery_zip_calls |>
+  left_join(acs_pop_18plus_moe, by = "zip")
+
+montgomery_zip_calls <- montgomery_zip_calls |>
+  mutate(
+    pop_min = total_pop_acs - moe_acs,
+    pop_max = total_pop_acs + moe_acs,
+    rate_min = (total_calls / pop_max) * 1000,
+    rate_max = (total_calls / pop_min) * 1000,
+    calls_per_1000 = (total_calls / total_pop_acs) * 1000
+  ) |>
+  arrange(desc(calls_per_1000))
+
+montgomery_zip_calls
+```
