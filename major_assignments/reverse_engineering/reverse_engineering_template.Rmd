@@ -20,6 +20,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this notebook, we are reverse engineering the story, [L.A. is slammed with record costs for legal payouts](https://www.latimes.com/local/lanow/la-me-ln-city-payouts-20180627-story.html)
 
+About: This story investigates how the City of Los Angeles has faced record-breaking legal costs due to lawsuits and settlements across city departments. The Times reporters found that legal payouts -- especially those involving the Los Angeles Police Department -- have surged over the past decade. Using a city databased of more than 18,000 payouts obtained through a public records request, the reporters showed that 2017 had an unprecedented number of multimillion dollar settlements that LAPD-related cases accounted for over 40% of total costs. The story emphasizes how these rising legal costs strain the city's budhet and contribute to financial challenges across department. 
+
 ## Load libraries
 
 Loading required libraries for this analysis.
@@ -31,11 +33,33 @@ library(readr)
 library(tidyverse)
 library(lubridate)
 library(janitor)
+library(readxl)
 ```
 
 ## Load and Cleaning Data
 
 In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
+
+Answer: 
+
+The data used in this analysis was compiled by the Los Angeles Times through a public records request to the City of Los Angeles. It includes detailed information on every legal payout -- settlements, judgments and other payments made by the city from July 2005 to June 2018. 
+
+Data Sources:
+- payouts.xlsx: Master dataset listing each payout, its fiscal year, amount and related case type. 
+- casetypes.csv: Defines the type of each case in both how it came from public records and the latimes_type, meaning the clean version which it was categorized (e.g., police misconduct, dangerous conditions, employment dispute).
+- departments.csv: Lists city departments involved in each payout and the case each department was attributed to.  
+- department-totals.csv: Aggregated payout totals by department. 
+- type-totals.csv: Aggregate totals by case type. 
+
+Variables: 
+- 'case_number' = unique identifier for each case
+- 'amount' = dollar amount of payout (the amount paid for settlement or judgment) 
+- 'fiscal_year' = fiscal year where the payout occurred
+- 'department' = department associated with the payout
+- 'type' = category of legal case (police, traffic, dangerous condition)
+
+Notes and Caveats: 
+
 
 ```{r}
 # Load required data
@@ -63,9 +87,20 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ```{r}
 # Put code to reverse engineer sentence here
+payouts <- payouts |> 
+clean_names() 
+
+city_payouts <- payouts |>
+  mutate(range = case_when(
+    amount < 500000 ~ "<$500K",
+    amount >= 500000 & amount < 5000000 ~ "$500K–$5M",
+    amount >= 5000000 ~ ">$5M"
+  )) |>
+  group_by(range) |>
+  summarise(total_amount = sum(amount))
 
 # Display results of code below this codeblock
-
+city_payouts 
 ```
 
 ### Sentence 2
@@ -92,9 +127,10 @@ filter(amount >= 1000000) |>
 
 ```{r}
 # Put code to reverse engineer sentence here
+nrow(payouts)
 
 # Display results of code below this codeblock
-
+#18,703
 ```
 
 ### Sentence 4
@@ -104,9 +140,11 @@ filter(amount >= 1000000) |>
 
 ```{r}
 # Put code to reverse engineer sentence here
-
+department_totals |>
+mutate(pct_of_total = (amount/sum(amount)) * 100) |>
+arrange(desc(pct_of_total))
 # Display results of code below this codeblock
-
+#LAPD == 42.43863555145 <- total percent
 ```
 
 ### Sentence 5
@@ -116,9 +154,27 @@ filter(amount >= 1000000) |>
 
 ```{r}
 # Put code to reverse engineer sentence here
+payouts <- payouts |>
+  mutate(case_type = str_trim(case_type),       
+         case_type = str_to_title(case_type))  
+
+dangerous_totals <- payouts |>
+  filter(str_detect(case_type, "Dangerous")) |>
+  group_by(fiscal_year) |>
+  summarise(dangerous_total = sum(amount)) |>
+arrange(desc(fiscal_year))
+
+police_totals <- payouts |>
+  filter(str_detect(case_type, "Police")) |>
+  group_by(fiscal_year) |>
+  summarise(police_total = sum(amount)) |>
+arrange(desc(fiscal_year))
+
+dangerous_totals
+police_totals
 
 # Display results of code below this codeblock
-
+dangerous_vs_police
 ```
 
 -30-
