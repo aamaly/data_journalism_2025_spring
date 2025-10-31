@@ -45,11 +45,11 @@ Answer:
 The data used in this analysis was compiled by the Los Angeles Times through a public records request to the City of Los Angeles. It includes detailed information on every legal payout -- settlements, judgments and other payments made by the city from July 2005 to June 2018. 
 
 Data Sources:
-- payouts.xlsx: Master dataset listing each payout, its fiscal year, amount and related case type. 
-- casetypes.csv: Defines the type of each case in both how it came from public records and the latimes_type, meaning the clean version which it was categorized (e.g., police misconduct, dangerous conditions, employment dispute).
-- departments.csv: Lists city departments involved in each payout and the case each department was attributed to.  
-- department-totals.csv: Aggregated payout totals by department. 
-- type-totals.csv: Aggregate totals by case type. 
+- payouts.xlsx: A detailed record of individual legal payouts and settlements. Came from the city's financial or risk management database. Each row is a single payout and likely includes information such as the case type, the department, the payout amount and the date. This is the main dataset used to analyze trends, totals and patterns. 
+- casetypes.csv: A list of different types of legal cases. Likely exported from a city database tracking claims, lawsuits or settlements. Each row corresponds to a case category, such as police misconduct, dangerous conditions or other types of claims. This allows analysis of payouts by the type of legal case.  
+- departments.csv: A list of Los Angeles city departments. Came from internal city records or a public database of city departments. Each row represents a department responsible and the cleaned LA Times version of it. This allows analysis to be more simple and easy to run because it is standardized based on the departmental groups (becomes generic department name). 
+- department-totals.csv: Summary data showing total payouts per department. Aggregated data by departments from the payouts excel spreadsheet, and from other exported city reports. Each row shows a department and its aggregated statistics, such as total payout amounts and total number of cases. This is useful for quickly seeing which departments contribute most to legal costs in the city. 
+- type-totals.csv: Summary data showing total payouts per case type. Similar to department_totals.csv, derived from payouts_xlsx. Each row shows its LA Times case type (category) and its aggregated totals, showing which types of legal cases are most costly for the city. 
 
 Variables: 
 - 'case_number' = unique identifier for each case
@@ -59,7 +59,10 @@ Variables:
 - 'type' = category of legal case (police, traffic, dangerous condition)
 
 Notes and Caveats: 
-
+- Some payouts are missing department attribution which are excluded from department-level analysis. 
+- Amounts are in dollars. 
+- Case type descriptions required for cleaning for capitalization and white space inconsistencies.
+- Some fiscal years have fewer records or none at all due to incomplete reporting or record errors. 
 
 ```{r}
 # Load required data
@@ -83,12 +86,12 @@ In this notebook, we are reverse engineering five sentences from the story.
 ### Sentence 1
 
 * **Beyond the mammoth cases, a pileup of other large payouts has padded the tab, a Times analysis of city payouts found.**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **We grouped payouts into three size categories (<500K, $500K-$5M, >$5M) and calculated totals. The results confirm that while a few multimillion-dollar payouts contribute heavily, a large number of moderately sized payouts also substantially increases the total legal payout. More importantly, the results confirm that the largest portion of payouts are over $5 million (1,161,404,203). Additionally, the results show that the nearly 66% of the total payouts were above $5 million, which is significantly more than the other ranges.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
-payouts <- payouts |> 
-clean_names() 
+payouts <- payouts |>
+clean_names()
 
 city_payouts <- payouts |>
   mutate(range = case_when(
@@ -97,7 +100,9 @@ city_payouts <- payouts |>
     amount >= 5000000 ~ ">$5M"
   )) |>
   group_by(range) |>
-  summarise(total_amount = sum(amount))
+  summarise(total_amount = sum(amount)) |>
+  arrange(desc(total_amount)) |>
+  mutate(pct_of_total = (total_amount / sum(total_amount, na.rm = TRUE)) * 100)
 
 # Display results of code below this codeblock
 city_payouts 
@@ -123,7 +128,7 @@ filter(amount >= 1000000) |>
 ### Sentence 3
 
 * **The Times analyzed a city database listing more than 18,000 payouts dating back to July 2005, obtained through a public records request.**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **The dataset contains 18,703 rows, which confirms the reported number of payouts analyzed. It shows that indeed there are more than 18,000 payouts dating back to July 2005 since that is when the payouts excel spreadsheet dates to.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -136,7 +141,7 @@ nrow(payouts)
 ### Sentence 4
 
 * **Thousands of legal battles involving the Los Angeles Police Department … have added up to more than 40% of the total — a higher sum than any other city department, the analysis showed.**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Calculating total payouts by department shows LAPD accounting for approximately 42.4% of the total, higher than any other city department, confirming this sentence from the LA Times. Additionally, the results showed that its payout amount came to $373,751,894.14, which is significantly higher than all the other departments. The following department is Public Works, which makes up nearly 24% of the total payouts -- from there it only decreases in percentage totals that make up the payouts.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -150,7 +155,7 @@ arrange(desc(pct_of_total))
 ### Sentence 5
 
 * **Legal payouts for ‘dangerous conditions’ have rivaled and, last budget year, even exceeded the cost of lawsuits over police misconduct, the analysis found.**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Based on this code, I can confirm that the sentence from LA Times is accurate. The results signify that legal payouts for "dangerous conditions" exceeded the cost of lawsuits over police misconduct. Granted, in this data set it shows that the fiscal years 2017 and 2018 did not have a total amount of payouts either reported or found. However, it does show that dangerous conditions had a total of $30,836,264 in payouts and $48,079,509 in fiscal year 2017. In fiscal year 2016, the police misconduct total exceeded dangerous condition lawsuits (dangerous conditions: $22,053,223	police misconduct: $28,667,200).**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -172,6 +177,9 @@ arrange(desc(fiscal_year))
 
 dangerous_totals
 police_totals
+
+dangerous_vs_police <- dangerous_totals |>
+  left_join(police_totals, by = "fiscal_year")
 
 # Display results of code below this codeblock
 dangerous_vs_police
