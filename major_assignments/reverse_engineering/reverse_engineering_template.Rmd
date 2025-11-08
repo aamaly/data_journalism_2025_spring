@@ -86,7 +86,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 ### Sentence 1
 
 * **Legal payouts for this budget year are estimated to total around $109 million.**: [Paste in sentence to engineer here]
-* **I was not able to confirm that the estimated total for legal payouts in 2018 were around $109 million. Instead, I found that it was $72,829,597 -- essentially $73 million. I'm not sure if I did the code correctly, but based on the code I wrote -- it doesn't seem like the numbers match up. With that said, I used the correct dataframe and made sure the totals were achieved for all the fiscal years, just to double check. But, I soon realized that fiscal year 2018 legal payouts were around $73 million not $109 million. I'm not sure where $109 million came from.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **I was not able to confirm that the estimated total for legal payouts in 2018 were around $109 million. Instead, I found that it was $72,829,597 -- essentially $73 million. I'm not sure if I did the code correctly, but based on the code I wrote -- it doesn't seem like the numbers match up. With that said, I used the correct dataframe (payouts) and made sure the totals were obtained for all the fiscal years; just to double check I found the total amount for every fiscal year. But, I soon realized that fiscal year 2018 legal payouts were around $73 million not $109 million. I'm not sure where $109 million came from.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
