@@ -119,7 +119,7 @@ x2017_payouts
 ### Sentence 3
 
 * **Last budget year, the city paid out more than $200 million in legal settlements and court judgments — a record amount that was more than the city spent on its libraries or fixing its streets.**: [Paste in sentence to engineer here]
-* **I could confirm these findings by summing all payouts for the 2017 full fiscal year reported. The total legal payouts exceeded $200 million, which aligns with the LA Times statement. Comparing this to available city budget data shows that this amount is indeed larger than the city's expenditures on libraries or street maintenance, confirming the "record amount" claim. The exact number for 2017 budget year was $201,372,336. **: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **I could confirm these findings by summing all payouts for the 2017 full fiscal year reported. The total legal payouts exceeded $200 million, which aligns with the LA Times statement. Comparing this to available city budget data shows that this amount is indeed larger than the city's expenditures on libraries or street maintenance, confirming the "record amount" claim. The exact number for 2017 budget year was $201,372,336.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
