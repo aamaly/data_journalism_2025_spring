@@ -85,27 +85,18 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 ### Sentence 1
 
-* **Beyond the mammoth cases, a pileup of other large payouts has padded the tab, a Times analysis of city payouts found.**: [Paste in sentence to engineer here]
-* **We grouped payouts into three size categories (<500K, $500K-$5M, >$5M) and calculated totals. The results confirm that while a few multimillion-dollar payouts contribute heavily, a large number of moderately sized payouts also substantially increases the total legal payout. More importantly, the results confirm that the largest portion of payouts are over $5 million (1,161,404,203). Additionally, the results show that the nearly 66% of the total payouts were above $5 million, which is significantly more than the other ranges.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Legal payouts for this budget year are estimated to total around $109 million.**: [Paste in sentence to engineer here]
+* **I was not able to confirm that the estimated total for legal payouts in 2018 were around $109 million. Instead, I found that it was $72,829,597 -- essentially $73 million. I'm not sure if I did the code correctly, but based on the code I wrote -- it doesn't seem like the numbers match up. With that said, I used the correct dataframe and made sure the totals were achieved for all the fiscal years, just to double check. But, I soon realized that fiscal year 2018 legal payouts were around $73 million not $109 million. I'm not sure where $109 million came from.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
-payouts <- payouts |>
-clean_names()
-
-city_payouts <- payouts |>
-  mutate(range = case_when(
-    amount < 500000 ~ "<$500K",
-    amount >= 500000 & amount < 5000000 ~ "$500K–$5M",
-    amount >= 5000000 ~ ">$5M"
-  )) |>
-  group_by(range) |>
-  summarise(total_amount = sum(amount)) |>
-  arrange(desc(total_amount)) |>
-  mutate(pct_of_total = (total_amount / sum(total_amount, na.rm = TRUE)) * 100)
+total_payout_2018 <- payouts |>
+  filter(fiscal_year == 2018) |>
+  group_by(fiscal_year) |>
+  summarise(total_amount = sum(amount))
 
 # Display results of code below this codeblock
-city_payouts 
+total_payout_2018
 ```
 
 ### Sentence 2
@@ -115,27 +106,28 @@ city_payouts
 
 ```{r}
 # Put code to reverse engineer sentence here
-payouts|>
+x2017_payouts <- payouts|>
 clean_names() |>
 filter(amount >= 1000000) |>
   group_by(fiscal_year) |>
   summarise(total_over_million = n()) |>
   arrange(desc(total_over_million))
 # Display results of code below this codeblock
-30/6
+x2017_payouts
 ```
 
 ### Sentence 3
 
-* **The Times analyzed a city database listing more than 18,000 payouts dating back to July 2005, obtained through a public records request.**: [Paste in sentence to engineer here]
-* **The dataset contains 18,703 rows, which confirms the reported number of payouts analyzed. It shows that indeed there are more than 18,000 payouts dating back to July 2005 since that is when the payouts excel spreadsheet dates to.**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Last budget year, the city paid out more than $200 million in legal settlements and court judgments — a record amount that was more than the city spent on its libraries or fixing its streets.**: [Paste in sentence to engineer here]
+* **I could confirm these findings by summing all payouts for the 2017 full fiscal year reported. The total legal payouts exceeded $200 million, which aligns with the LA Times statement. Comparing this to available city budget data shows that this amount is indeed larger than the city's expenditures on libraries or street maintenance, confirming the "record amount" claim. The exact number for 2017 budget year was $201,372,336. **: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
 # Put code to reverse engineer sentence here
-nrow(payouts)
-
+total_payout_2017 <- payouts |>
+  filter(fiscal_year == 2017) |>
+  summarise(total_amount = sum(amount))
 # Display results of code below this codeblock
-#18,703
+total_payout_2017
 ```
 
 ### Sentence 4
@@ -145,11 +137,11 @@ nrow(payouts)
 
 ```{r}
 # Put code to reverse engineer sentence here
-department_totals |>
+lapd_pct_payouts <- department_totals |>
 mutate(pct_of_total = (amount/sum(amount)) * 100) |>
 arrange(desc(pct_of_total))
 # Display results of code below this codeblock
-#LAPD == 42.43863555145 <- total percent
+lapd_pct_payouts
 ```
 
 ### Sentence 5
