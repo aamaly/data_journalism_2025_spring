@@ -30,7 +30,7 @@ library(janitor)
 
 You MUST do the following things when answering this question: \* Load the md_gov_county.csv and md_gov_county_18.csv files from the data folder \* Join those dataframes, specifying the join column. \* Add columns to generate percentages for Cox and Hogan. \* Export that joined dataframe to a CSV file using `write_csv`. \* Using that exported CSV, make a chart with Datawrapper. What kind of chart is up to you, so experiment with a few kinds of charts to see what answers the question above in the clearest way. Your chart MUST: \* Have a title, description and source that tells readers about the data. The title and description should highlight the most newsworthy or important aspect. \* Easily readable labels and values \* Publish your chart \* Describe your thought process below - why you chose to make the chart you did - and add the URL of your chart.
 
-**A1.**
+**A1.** <https://datawrapper.dwcdn.net/2mCQO/1/>
 
 ```{r}
 md_gov_county <- read_csv("data/md_gov_county.csv") |>
@@ -54,8 +54,6 @@ joined_md_gov_county <- joined_md_gov_county |>
   )
 
 write_csv(joined_md_gov_county, "data/joined_md_gov_county.csv")
-
-
 ```
 
 **Q2.** You're interested in seeing how the methods of voting have changed in Maryland since 2018. Using the `md_votes_by_type.csv` that has data from the top of the ticket (governor in 2018 and 2022, president in 2020), make a chart showing the percentage of votes cast in each category - early voting, election day and mail - over the three years. You'll need to make those percentages in R and then export the CSV using `write_csv`, then make the chart in Datawrapper. Have a title, description and source that tells readers about the data. The title and description should highlight the most newsworthy or important aspect.
