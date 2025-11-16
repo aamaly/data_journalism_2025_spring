@@ -62,9 +62,21 @@ HINT: In Datawrapper's "Check and Describe" tab, you can click on a column to ge
 
 What do you think the story here is? Put the answer below along with the URL of your chart.
 
-**A2.**
+**A2.** <https://datawrapper.dwcdn.net/Kp4mt/1/>
 
 ```{r}
+md_votes_by_type <- read_csv("data/md_votes_by_type.csv") |>
+  clean_names()
+
+md_votes_by_type_pct <- md_votes_by_type |>
+  mutate(
+    early_pct = early / total * 100,
+    election_day_pct = election_day / total * 100,
+    mail_pct = mail / total * 100
+  ) |>
+  select(year, early_pct, election_day_pct, mail_pct)
+
+write_csv(md_votes_by_type_pct, "data/md_votes_by_type_pct.csv")
 ```
 
 **Q3.** You want to know more about the geography of 911 overdose calls in Montgomery County, Maryland, in 2022. To do that, you'll make a choropleth map in Datawrapper. You will need to:
@@ -79,7 +91,23 @@ What do you think the story here is? Put the answer below along with the URL of 
 
 What do you think the story here is, and what would you want to know more about? Put the answer below along with the URL of your map.
 
-**A3.**
+**A3.**<https://datawrapper.dwcdn.net/glBGv/1/>
 
 ```{r}
+montgomery_2022_overdoses <- read.csv("data/montgomery_2022_overdoses.csv") |>
+  clean_names()
+
+overdose_by_zip <- montgomery_2022_overdoses |>
+  filter(!is.na(zip)) |> 
+  group_by(zip) |>
+  summarise(
+    calls = n()
+  ) |>
+  ungroup() |>
+  mutate(
+    total_calls = sum(calls),
+    pct_calls = calls / total_calls * 100
+  )
+
+write_csv(overdose_by_zip, "data/overdoses_by_zip.csv")
 ```
