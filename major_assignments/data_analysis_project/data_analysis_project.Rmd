@@ -38,34 +38,36 @@ library(tidycensus)
 
 In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
 
-About: The Maryland Notices of Intent to Forclose by Zip Code dataset contains 53 columns and 563 rows of data (updates periodically). Each row represents a single Maryland zipcode, and the columns correspond to months from July 2021 through October 2025, containing the number of foreclosure notices reported for a specific zipcode in that month. The first column is 'zip,' which identifies the zip code. The remaining 52 columns correspond to monthly foreclosure counts. The dataset was originally created on July 12, 2022. 
+About: The Maryland Notices of Intent to Forclose by Zip Code dataset contains 53 columns and 563 rows of data (updates periodically). Each row represents a single Maryland zip code, and the columns correspond to months from July 2021 through October 2025, containing the number of foreclosure notices reported for each zip code during that month. The first column is 'zip,' which identifies the zip code. The remaining 52 columns correspond to monthly foreclosure counts. The dataset was originally created on July 12, 2022. 
 
-The dataset is compiled from a third-party report with the Maryland Office of Financial Regulation, which may contain duplicates or errors. The financial regulation office emphasized that the data may differ from official foreclosure court records, so totals may not perfectly reflect actual foreclosure activity. 
+The dataset is compiled from a third-party report from the Maryland Office of Financial Regulation, and may contain duplicates or errors. The financial regulation office emphasized that the data may differ from official foreclosure court records, so totals may not perfectly reflect actual foreclosure activity. 
 
 The data updates, but what we have here covers July 2021 to October 2025, roughly four years. Any analysis backed with data would not be ideal outside of this timeframe. 
 
-The dataset does not include demographic, economic or housing characteristics by zipcode (like population, income or racial group). To answer questions about income or racial demographics, we will join U.S. Census data to help. No information about property type, loan type or reasons for foreclosure is included in the original dataframe. Additionally, the dataset provides counts, not rates relative to population or housing units. Again, we'll merge data from ACS to analyze this data properly. 
+The dataset does not include demographic, economic or housing characteristics by zip code (like population, income or racial group). To answer questions about income or racial demographics, we will need to join U.S. Census data with the foreclosure dataset. No information about property type, loan type or reasons for foreclosure is included in the original dataframe. Additionally, the dataset provides counts, not rates relative to population or housing units. Again, we'll merge data from ACS to analyze this data properly. 
 
 
 Variables: 
 - 'zip': Every zipcode across Maryland. 
-- When a column has a month followed by an underscore and then the year (ex.: 'july_2021'), it means, in that column, there will be all the foreclosure notices for that specific month and that specific year for each zipcode. 
+- When a column has a month followed by an underscore and then the year (ex.: 'july_2021'), it means, in that column, it will include the total number of foreclosure notices that occurred during that specific month and year for each zip code. 
 
 Notes and Caveats: 
 - It's important to note that these are notices of intent to foreclose, even though we may shorten that in code as foreclosure notices or 'foreclose_notice.' These foreclosure notice counts do not equal to foreclosure case records. 
-- Some zipcodes have zero foreclosure notices for a month(s), but others may have several. 
-- There is no total amount because the dataset usually updates. 
+- Some zip codes have zero foreclosure notices for a month(s), but others may have several. 
+- There is no total amount because the dataset is frequently updated. 
 - Any duplicates or errors may be present. 
 - Last update was Nov. 6, 2025. 
-- Exported this data on Nov. 22, 2025 when the last update still read Nov. 6, 2025. 
-- At a glance the dataset allows us to:
+- Exported this data on Nov. 22, 2025, when the last update still read Nov. 6, 2025. 
+- At a glance, the dataset allows us to:
   - Calculate the total foreclosures by zipcode. 
   - Identify trends across months and years.
   - Compare foreclosure notices between zipcodes.
-- Join census data for demographic/rate questions. Everything else should be in this dataset.
-  - 'zip' is listed as a character, so this way we can join it easily. If it is needed as a numeric, then we must change it. 
-  - All the months are listed as a numeric. 
-  - We need to make more aggregated dataframes. 
+  - Create choropleth maps showing foreclosure totals or per capita rates by zip. 
+- The dataset simply holds the totals. It does not include any specific information about the notices of intent to foreclose besides the zip code, month and year. 
+- We will need to join census data for demographic/rate questions. Everything else should be in this dataset.
+  - 'zip' is correctly listed as a character, so this way we can join it easily. If it is needed as a number, then we must change it. 
+  - All the months are listed as a numeric data type. 
+  - We need to make more aggregated dataframes for our analyses.
 
 ```{r}
 # Load required data
