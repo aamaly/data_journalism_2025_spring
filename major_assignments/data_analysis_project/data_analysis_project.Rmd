@@ -88,14 +88,28 @@ In this notebook, we are coding five sentences using the state data.
 ### Sentence 1
 
 * **Which zipcode has the highest number of foreclosure notices total, and which has the highest rate over the four year period? Where are those areas?**
-* **XXXX**: [Write up two to three sentences describing the results of your analysis.]
+* **The zip code 20772 had the most notices to foreclose of the dataset at 6,877 and therefore the highest rate of 132.25 notices per month. It's located in Prince George's County and encompasses much of Upper Marlboro. The next highest is the area neighboring directly North, zip code 20774 at 5,856 notices of 112.62 per month.**: [Write up two to three sentences describing the results of your analysis.]
 
 ```{r}
 # Put code here
+md_foreclosures_long <- md_foreclosure_notices_zipcode |>
+  pivot_longer(cols = contains("_"), names_to = "month", values_to = "foreclosures") |>
+  mutate(
+    month = dmy(paste("01", str_replace(month, "_", " "))),
+    year = year(month)
+  )
 
-
+# Use above dataframe for analysis but don't modify - date columns for month and year made and pivoted for easier use
+  
+md_foreclosures_summary <- md_foreclosures_long |>
+  group_by(zip) |>
+  summarise(total = sum(foreclosures, na.rm = TRUE),
+            months = n(),
+            avg_per_month = total / months
+  ) |>
+  arrange(desc(total))
 # Display results of code below this codeblock
-
+md_foreclosures_summary
 ```
 
 ### Sentence 2
@@ -105,10 +119,21 @@ In this notebook, we are coding five sentences using the state data.
 
 ```{r}
 # Put code here
+month_foreclosures <- md_foreclosures_long |>
+  group_by(month) |>
+  summarise(total = sum(foreclosures, na.rm = TRUE),
+  ) |>
+  arrange(desc(total))
 
+year_foreclosures <- md_foreclosures_long |>
+  group_by(year) |>
+  summarise(total = sum(foreclosures, na.rm = TRUE),
+  ) |>
+  arrange(desc(total))
 
 # Display results of code below this codeblock
-
+month_foreclosures 
+year_foreclosures
 ```
 
 ### Sentence 3
@@ -127,14 +152,25 @@ In this notebook, we are coding five sentences using the state data.
 ### Sentence 4
 
 * **Which zip codes have had the largest increase in foreclosures from July 2021 to October 2025? Which had the largest decrease? Are these in similar areas?**
-* **XXXX**: [Write up two to three sentences describing the results of your analysis.]
+* **20772 had the largest increase in foreclosure notices from July 2021 to October 2025, with a 199 foreclosure difference. While, 20618 and nine other zip codes had less foreclosures in October 2025 (can add the other zip codes too and locate those areas). There were many other zip codes that had zero change, specifically, some had 0 foreclosures in July 2021 and October 2025. For this question, I'll compare 20772 and 20618. It seems to be that 20772 is a zipcode in Prince George's County, covering most of Upper Marlboro. And 20618 is a zipcode in St. Mary's County, covering towns like Bushwood and Yellowbank. These areas are vastly differently since 20722 consists of a more suburban almost urban city and 20618 consists towns that are quite rural.**: [Write up two to three sentences describing the results of your analysis.]
 
 ```{r}
 # Put code here
+foreclosure_change <- md_foreclosure_notices_zipcode |>
+  select(zip, july_2021, october_2025) |>
+  mutate(
+    change = october_2025 - july_2021
+  )
 
+largest_increase <- foreclosure_change |>
+  arrange(desc(change)) 
+
+largest_decrease <- foreclosure_change |>
+  arrange(change)
 
 # Display results of code below this codeblock
-
+largest_increase
+largest_decrease
 ```
 
 ### Sentence 5
