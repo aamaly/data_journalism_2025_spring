@@ -115,7 +115,7 @@ md_foreclosures_summary
 ### Sentence 2
 
 * **What month has the highest number of foreclosure notices? What about year? Are there any differences or similarities between the month that has the highest and the year that has the highest? Why might this be?**
-* **XXXX**: [Write up two to three sentences describing the results of your analysis.]
+* **2021 is dwarfed by the other years at 14027 foreclosure notices. This could be because it is only a half year of data (July - December), but it still seems small compared to the next highest year, 2022, at 55369. The notices seem to increase every year, with the only discrepancy being 2025 under 2024 with 74930 versus 79577 notices. However, 2025 is also an incomplete year with its data ending in October, so the trend seems legitimate. The top three months are in 2025, and generally the months themselves don't seem to correlate much with any trends.**: [Write up two to three sentences describing the results of your analysis.]
 
 ```{r}
 # Put code here
@@ -139,14 +139,43 @@ year_foreclosures
 ### Sentence 3
 
 * **What are the majority racial demographics of zip codes with notably high or low foreclosure rates? How about their median income?**
-* **XXXX**: [Write up two to three sentences describing the results of your analysis.]
+* **9 of the top 10 zip codes are majority black, and the case seems the same for the majority of zip codes with above 50 foreclosure notices per month. The bottom of the list has many zip codes with unavailable demographic statistics but as they start to show up, white majority zips become frequent. The top two zip codes have very high median incomes but beyond that there doesn't seem to be any correlation to notices as the statistic begins to vary widely.**: [Write up two to three sentences describing the results of your analysis.]
 
 ```{r}
 # Put code here
+#census_api_key("5f1b0191937344c7555fa83bfd1c93a7c042f1c3", install = TRUE)
+
+race_income <- get_acs(
+  geography = "zcta",
+  variables = c(
+    median_income = "B19013_001",
+    total_pop = "B02001_001",
+    white = "B02001_002",
+    black = "B02001_003",
+    native = "B02001_004",
+    asian = "B02001_005"
+  ),
+  year = 2022,
+  survey = "acs5",
+  output = "wide"
+) |>
+  rename(zip = GEOID) |>
+  mutate() |>
+  mutate(
+    zip = as.character(zip),
+    pct_white = whiteE / total_popE,
+    pct_black = blackE / total_popE,
+    pct_asian = asianE / total_popE,
+    pct_native = nativeE / total_popE
+    )
+  
+census_foreclosures_summary <- md_foreclosures_summary |>
+  left_join(race_income, by = "zip") |>
+  arrange(desc(total))
 
 
 # Display results of code below this codeblock
-
+census_foreclosures_summary
 ```
 
 ### Sentence 4
