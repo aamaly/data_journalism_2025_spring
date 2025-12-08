@@ -77,8 +77,6 @@ Notes and Caveats:
 md_foreclosure_notices_zipcode <- read_csv("data/md_foreclosure_notices_zipcode.csv") |>
   clean_names()
 
-View(md_foreclosure_notices_zipcode)
-
 glimpse(md_foreclosure_notices_zipcode)
 ```
 
