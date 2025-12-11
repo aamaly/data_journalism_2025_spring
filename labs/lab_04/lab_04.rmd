@@ -74,6 +74,7 @@ media <- maryland_expenses |>
 write_csv(media, "data/media_expenses.csv")
 
 media_clean <- read_csv("data/refined-media-expenses.csv")
+
 #View(refined_media_expenses)
 
 facebook_spending <- media_clean |>
@@ -83,7 +84,6 @@ facebook_spending <- media_clean |>
   arrange(desc(total_amount)) |>
 
 print(facebook_spending)
-view(facebook_spending)
 ```
 
 **Q2.** Let's do some research on the top committees from question 1. Look up the top 10 spenders: if they are candidate committees, what offices were they running for? If they were not candidates, what issues do they seem to care about? Write some sentences answering those questions, then go the Facebook ad library ([https://www.facebook.com/ads/library/?active_status=all&ad_type=political_and_issue_ads&country=US&sort_data\\[direction\\]=desc&sort_data\\[mode\\]=relevancy_monthly_grouped&media_type=all](https://www.facebook.com/ads/library/?active_status=all&ad_type=political_and_issue_ads&country=US&sort_data%5Bdirection%5D=desc&sort_data%5Bmode%5D=relevancy_monthly_grouped&media_type=all){.uri}) and look for ads from the top spender. What do you notice about the the information provided about those ads?
@@ -107,7 +107,7 @@ Based on Q1, these candidate campaigns probably didn't run Facebook ads at the t
 The biggest recipients of media expenses by Gov. Wes Moore and his running mate was SKDK, a top democratic public affairs firm, receiving a total amount of $3,450,401.91. That total was from the Moore Miller For Maryland Slate campaign, but Wes Moore for Maryland also spent 3,270.76 dollars on SKDK for his own campaign. 
 
 ```{r}
-moore_media <- refined_media_expenses |>
+moore_media <- media_clean |>
   filter(
     expense_category == "Media",
     str_detect(committee_name, "Moore")
@@ -128,7 +128,7 @@ print(moore_media_recipients)
 **A4.** Now there are 407 rows of committees versus the 149 for the Facebook advertising. I think this shows a more holisitc version of committees who spent a great deal on advertising that might not have necessarily been through Facebook. We have some new committees at the top. Franchot is not in the top 10. Instead, at the top we have Democratic Senate Caucus Committee Maryland, which spent $311,557.00 on online advertising. However, CASA in action and John King's campaign (not the one with his running mate, though) still remain in top 10. With that said, the top three don't seem to be candidate campaign committees, but more so PAC's or other political committees spending money on online advertising. Of the top five committees, Franchot Anderson-Walker for Maryland Slate and Friends of Ashwani Jain spent all their online advertising dollars on Facebook. 
 
 ```{r}
-online_ads <- refined_media_expenses |>
+online_ads <- media_clean |>
   filter(str_detect(expense_purpose, regex("Online", ignore_case = TRUE))) |>
   group_by(committee_name) |>
   summarise(
@@ -147,7 +147,6 @@ comparison <- facebook_spending |>
   arrange(desc(facebook_spending))
 
 print(comparison)
-
 ```
 
 **Q5** Your editor asks you to summarize your findings about spending on Facebook by Maryland political candidates. How much do we know and what don't we know? What's the best story idea you've found here?
