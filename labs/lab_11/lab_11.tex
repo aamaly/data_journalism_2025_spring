@@ -1,0 +1,516 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={lab\_11},
+  pdfauthor={Aamaly Hossain},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{lab\_11}
+\author{Aamaly Hossain}
+\date{2025-12-10}
+
+\begin{document}
+\maketitle
+
+\subsection{You will need}\label{you-will-need}
+
+\begin{itemize}
+\tightlist
+\item
+  Our usual libraries for working with data, plus rvest and lubridate.
+\end{itemize}
+
+\subsection{Load libraries and establish
+settings}\label{load-libraries-and-establish-settings}
+
+\textbf{Task} Create a codeblock and load appropriate packages and
+settings for this lab.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#install.packages("tidytext")}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.5
+## v forcats   1.0.0     v stringr   1.5.2
+## v ggplot2   3.5.2     v tibble    3.3.0
+## v lubridate 1.9.4     v tidyr     1.3.1
+## v purrr     1.1.0     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidytext)}
+\FunctionTok{library}\NormalTok{(janitor)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'janitor'
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     chisq.test, fisher.test
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lubridate)}
+\FunctionTok{library}\NormalTok{(stringr)}
+\FunctionTok{library}\NormalTok{(rvest)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'rvest'
+## 
+## The following object is masked from 'package:readr':
+## 
+##     guess_encoding
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+Let's get to scraping.
+
+\subsection{Questions}\label{questions}
+
+\textbf{Q1}. Scrape the listing of available Maryland physician
+disciplinary alerts at
+\url{https://www.mbp.state.md.us/disciplinary_2024.aspx} into a
+dataframe. You should have three columns, one of which is a date, so
+make sure the date column has a date datatype. What's the most common
+sanction, and how many times is it mentioned in the 2024 alerts?
+
+\textbf{A1} Based on the dataframe, and ensuring that each sanction that
+is listed differently is its own unique sanction, the ``Summary
+Suspension'' sanction was the most common in 2024 alerts. It was
+mentioned eight times. This was not the calculation of how many times
+suspension was listed in 24 alerts. But, if we were to look at how many
+times it was mentioned in 2024 alerts, specifically the word
+``suspension,'' it was mentioned 33 times in 2024 alerts. However,
+``Summary Suspension'' was the most common alert as a unique sanction.
+And ``suspension'' was mentioned 33 times.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{url }\OtherTok{\textless{}{-}} \StringTok{"https://www.mbp.state.md.us/disciplinary\_2024.aspx"}
+
+\NormalTok{page }\OtherTok{\textless{}{-}} \FunctionTok{read\_html}\NormalTok{(url)}
+
+\NormalTok{alerts\_raw }\OtherTok{\textless{}{-}}\NormalTok{ page }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{html\_element}\NormalTok{(}\StringTok{"table"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{html\_table}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{clean\_names}\NormalTok{()}
+
+\NormalTok{alerts\_raw}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 59 x 3
+##    name                                 sanction                           date 
+##    <chr>                                <chr>                              <chr>
+##  1 Jacqueline Q. Ripple, ATC            Suspension imposed by the Consent~ 12/3~
+##  2 Kessiena Aya-Olabisi, D.O. (Expired) Suspension for a minimum of six m~ 12/0~
+##  3 Jonathan M. Ratliff, M.D.            Summary Suspension Affirmed.       12/0~
+##  4 Jonathan M. Ratliff, MD              Summary Suspension.                11/2~
+##  5 Aman K. Patel, D.O.                  Summary Suspension Affirmed.       11/0~
+##  6 Aman K. Patel, D.O.                  Summary Suspension.                10/2~
+##  7 Sadiq Al-Samarrai, M.D.              Permanent Surrender of License.    10/1~
+##  8 Benjamin Alan Feinzimer, D.O.        Suspension for six months; Suspen~ 10/0~
+##  9 Sadiq Al-Samarrai, M.D.              Summary Suspension.                09/3~
+## 10 Scott C. Moran, M.D.                 The Order for the Summary Suspens~ 09/1~
+## # i 49 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{alerts }\OtherTok{\textless{}{-}}\NormalTok{ alerts\_raw }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{floor\_date}\NormalTok{(}\FunctionTok{mdy}\NormalTok{(date), }\AttributeTok{unit =} \StringTok{"day"}\NormalTok{),}
+         \AttributeTok{sanction =} \FunctionTok{str\_to\_upper}\NormalTok{(}\FunctionTok{str\_remove\_all}\NormalTok{(sanction, }\StringTok{"[[:punct:]]"}\NormalTok{)))}
+\NormalTok{alerts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 59 x 3
+##    name                                 sanction                      date      
+##    <chr>                                <chr>                         <date>    
+##  1 Jacqueline Q. Ripple, ATC            SUSPENSION IMPOSED BY THE CO~ 2024-12-31
+##  2 Kessiena Aya-Olabisi, D.O. (Expired) SUSPENSION FOR A MINIMUM OF ~ 2024-12-09
+##  3 Jonathan M. Ratliff, M.D.            SUMMARY SUSPENSION AFFIRMED   2024-12-04
+##  4 Jonathan M. Ratliff, MD              SUMMARY SUSPENSION            2024-11-22
+##  5 Aman K. Patel, D.O.                  SUMMARY SUSPENSION AFFIRMED   2024-11-07
+##  6 Aman K. Patel, D.O.                  SUMMARY SUSPENSION            2024-10-23
+##  7 Sadiq Al-Samarrai, M.D.              PERMANENT SURRENDER OF LICEN~ 2024-10-11
+##  8 Benjamin Alan Feinzimer, D.O.        SUSPENSION FOR SIX MONTHS SU~ 2024-10-07
+##  9 Sadiq Al-Samarrai, M.D.              SUMMARY SUSPENSION            2024-09-30
+## 10 Scott C. Moran, M.D.                 THE ORDER FOR THE SUMMARY SU~ 2024-09-18
+## # i 49 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sanction\_counts }\OtherTok{\textless{}{-}}\NormalTok{ alerts }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{count}\NormalTok{(sanction, }\AttributeTok{sort =} \ConstantTok{TRUE}\NormalTok{)}
+
+\NormalTok{sanction\_counts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 31 x 2
+##    sanction                                                                    n
+##    <chr>                                                                   <int>
+##  1 SUMMARY SUSPENSION                                                          8
+##  2 SUMMARY SUSPENSION AFFIRMED                                                 7
+##  3 SURRENDER OF LICENSE                                                        7
+##  4 REVOCATION                                                                  6
+##  5 PERMANENT SURRENDER OF LICENSE                                              4
+##  6 APPLICATION FOR INITIAL MEDICAL LICENSURE DENIED                            2
+##  7 APPLICATION FOR INITIAL ATHLETIC TRAINER LICENSURE DENIED                   1
+##  8 APPLICATION FOR INITIAL PHYSICIAN ASSISTANT LICENSURE DENIED                1
+##  9 APPLICATION FOR REINSTATEMENT OF MEDICAL LICENSURE DENIED                   1
+## 10 ORDER FOR SUMMARY SUSPENSION OF LICENSE TO PRACTICE MEDICINE ISSUED SE~     1
+## # i 21 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{counts }\OtherTok{\textless{}{-}}\NormalTok{ alerts }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{str\_detect}\NormalTok{(sanction, }\StringTok{"SUSPENSION"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{nrow}\NormalTok{()}
+
+\NormalTok{counts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 33
+\end{verbatim}
+
+\textbf{Q2} Next, let's scrape the list of press releases from
+Maryland's Office of the Public Defender,
+\url{https://www.opd.state.md.us/press-releases}. This isn't a table, so
+you'll need to use \texttt{html\_elements()} and your browser's
+inspector and do some clean up on the results. The result should be a
+dataframe with two columns that contain the date and title, and the date
+column should have a date datatype. The challenge here is figuring out
+how to isolate the releases.
+
+When you finish scraping into a dataframe, write code to find the press
+releases that have the word ``police'' in the title.
+
+\textbf{A2} There are nine rows of data, meaning nine press releases
+that have the word ``police'' in the title. Some of these press releases
+have the word ``police'' repeatedly in the title.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{url }\OtherTok{\textless{}{-}} \StringTok{"https://www.opd.state.md.us/press{-}releases"}
+
+
+\NormalTok{opd }\OtherTok{\textless{}{-}} \FunctionTok{read\_html}\NormalTok{(url)}
+
+
+\NormalTok{raw }\OtherTok{\textless{}{-}}\NormalTok{ opd }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{html\_elements}\NormalTok{(}\StringTok{"div[data{-}testid=\textquotesingle{}richTextElement\textquotesingle{}] *"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{html\_text2}\NormalTok{() }
+
+\NormalTok{raw }\OtherTok{\textless{}{-}} \FunctionTok{str\_trim}\NormalTok{(raw)}
+
+\NormalTok{raw\_with\_dates }\OtherTok{\textless{}{-}} \FunctionTok{keep}\NormalTok{(raw, }\SpecialCharTok{\textasciitilde{}} \FunctionTok{str\_detect}\NormalTok{(.x, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{b}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{1,2\}/}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{1,2\}/}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{4\}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{b"}\NormalTok{))}
+
+\NormalTok{press\_df }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}\AttributeTok{raw =}\NormalTok{ raw\_with\_dates) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{distinct}\NormalTok{(raw, }\AttributeTok{.keep\_all =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{date\_str =} \FunctionTok{str\_extract}\NormalTok{(raw, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{1,2\}/}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{1,2\}/}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{4\}"}\NormalTok{),}
+    \AttributeTok{date =} \FunctionTok{mdy}\NormalTok{(date\_str),}
+    \AttributeTok{title =} \FunctionTok{str\_remove}\NormalTok{(raw, }\FunctionTok{paste0}\NormalTok{(}\StringTok{"\^{}"}\NormalTok{, date\_str, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*[:}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{{-}]?}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*"}\NormalTok{)),}
+    \AttributeTok{title =} \FunctionTok{str\_trim}\NormalTok{(title)}
+\NormalTok{  ) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(date) }\SpecialCharTok{\&}\NormalTok{ title }\SpecialCharTok{!=} \StringTok{""}\NormalTok{)}
+
+\NormalTok{press\_df }\OtherTok{\textless{}{-}}\NormalTok{ press\_df }\SpecialCharTok{|\textgreater{}} \FunctionTok{select}\NormalTok{(date, title)}
+
+\NormalTok{press\_df}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 89 x 2
+##    date       title                                                             
+##    <date>     <chr>                                                             
+##  1 2025-12-09 Maryland Office of the Public Defender Establishes Justice Partne~
+##  2 2025-12-05 Statement Update: No School At Youth Detention Center As Extreme ~
+##  3 2025-12-04 Press Release: Maryland Office of the Public Defender Sounds Alar~
+##  4 2025-11-19 Press Release: Maryland Office of the Public Defender Hosts Commu~
+##  5 2025-11-12 ​11/12/2025: Statement from Maryland Public Defender Natasha M. D~ 
+##  6 2025-01-12 Statement from Maryland Public Defender Natasha M. Dartigue on Co~
+##  7 2025-10-15 ​10/15/2025: In Defense of Us - Championing for Children: Childho~ 
+##  8 2025-10-15 In Defense of Us - Championing for Children: Childhood Protected,~
+##  9 2025-09-30 In Defense of Us: Steel & Stories – Her Voice, Her Truth, Her Fig~
+## 10 2025-09-17 Maryland Office of the Public Defender & Maryland Carey Law Launc~
+## # i 79 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{police\_df }\OtherTok{\textless{}{-}}\NormalTok{ press\_df }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{str\_detect}\NormalTok{(}\FunctionTok{str\_to\_lower}\NormalTok{(title), }\StringTok{"police"}\NormalTok{))}
+
+\NormalTok{police\_df}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 9 x 2
+##   date       title                                                              
+##   <date>     <chr>                                                              
+## 1 2021-06-21 In Aftermath of Video Depicting Excessive Police Force, Public Def~
+## 2 2020-09-17 Public Defenders Testify About Police Violence and Misconduct Stat~
+## 3 2020-02-24 Public Defender Seeks to Identify Cases Potentially Impacted by Br~
+## 4 2018-12-06 Statement of Kirsten Getty-Downs, District Public Defender for Bal~
+## 5 2017-07-31 Another Problematic Police Body-Worn Camera Video Identified; Balt~
+## 6 2017-07-19 Public Defender Discloses Video Evidence of Officers Planting Drug~
+## 7 2016-08-24 OPD Statement on the Baltimore Police Department’s Secret Aerial S~
+## 8 2016-08-10 OPD Applauds DOJ Report, Urges Greater Transparency by the Baltimo~
+## 9 2015-05-07 ​5/7/2015: Police Continue to Illegally Arrest Children in Baltimore
+\end{verbatim}
+
+\textbf{Q3} Sen.~Chris Van Hollen, D-Maryland, has posted press releases
+at \url{https://www.vanhollen.senate.gov/news/press-releases}. It would
+be great to have them in a dataframe that has the following columns:
+date, title and url.
+
+To do this, you will need to scrape the page's html and save that to a
+variable, and \emph{then} extract the dates, titles and urls into
+separate dataframes using html\_elements(). There are two different
+elements that contain the press release URL; pick one of them, and you
+may need to invoke an HTML \texttt{class} value to do it. The function
+\texttt{html\_text()} pulls out the contents of a tag, but for urls we
+want the HTML attribute. Rvest gives you a way to extract the URL from a
+link; google to find out what it is. Remember how we turn a list into a
+dataframe.
+
+At the end, you'll have three dataframes that you want to combine into a
+single dataframe. When we want to combine the rows of identical
+dataframes, we used \texttt{bind\_rows()}. If you were combining columns
+instead of rows, there's a similar function. Find out what it is and use
+it to put all of the dataframes toge ther into a single one.
+
+When you're done, rename the columns so they make sense, then make sure
+the date column is an actual date.
+
+Finally, tell me what questions you could ask of this data if you had
+all of his press releases. Be creative.
+
+\textbf{A3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Which topics or keywords appear most frequently in the press release
+  titles, and how has this changed over time?
+\item
+  How many press releases are published each year or each month---are
+  there seasonal trends or spikes around elections?
+\item
+  Are there clusters of press releases on the same day or week,
+  suggesting coordinated messaging?
+\item
+  Which press releases mention specific legislation, committees, or
+  agencies most often?
+\item
+  Can you identify shifts in tone or focus in the titles over time
+  (e.g., more urgent, positive, or neutral messaging)?
+\end{enumerate}
+
+Had to Google a lot of this because I was getting several errors when
+running my code or I was not getting the correct dataframe.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{base\_url }\OtherTok{\textless{}{-}} \StringTok{"https://www.vanhollen.senate.gov"}
+
+
+\NormalTok{url }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(base\_url, }\StringTok{"/news/press{-}releases"}\NormalTok{)}
+\NormalTok{page }\OtherTok{\textless{}{-}} \FunctionTok{read\_html}\NormalTok{(url)}
+
+
+\NormalTok{items }\OtherTok{\textless{}{-}}\NormalTok{ page }\SpecialCharTok{|\textgreater{}} \FunctionTok{html\_elements}\NormalTok{(}\StringTok{"li"}\NormalTok{)}
+
+
+\NormalTok{press\_items }\OtherTok{\textless{}{-}}\NormalTok{ items }\SpecialCharTok{|\textgreater{}} \FunctionTok{keep}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ \{}
+\NormalTok{  txt }\OtherTok{\textless{}{-}} \FunctionTok{html\_text2}\NormalTok{(.x)}
+  \FunctionTok{str\_detect}\NormalTok{(txt, }\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{2\}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{2\}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{2\}"}\NormalTok{)}
+\NormalTok{\})}
+
+
+\NormalTok{press\_df }\OtherTok{\textless{}{-}}\NormalTok{ press\_items }\SpecialCharTok{|\textgreater{}} \FunctionTok{map\_df}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(item) \{}
+
+\NormalTok{  full\_text }\OtherTok{\textless{}{-}} \FunctionTok{html\_text2}\NormalTok{(item)}
+\NormalTok{  date\_str }\OtherTok{\textless{}{-}} \FunctionTok{str\_extract}\NormalTok{(full\_text, }\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*(}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{2\}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{2\}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d\{2\})"}\NormalTok{) }\SpecialCharTok{|\textgreater{}} \FunctionTok{str\_trim}\NormalTok{()}
+\NormalTok{  date }\OtherTok{\textless{}{-}} \FunctionTok{mdy}\NormalTok{(}\FunctionTok{str\_replace\_all}\NormalTok{(date\_str, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{."}\NormalTok{, }\StringTok{"/"}\NormalTok{)) }
+
+
+\NormalTok{  a }\OtherTok{\textless{}{-}}\NormalTok{ item }\SpecialCharTok{|\textgreater{}} \FunctionTok{html\_element}\NormalTok{(}\StringTok{"a"}\NormalTok{)}
+  
+
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(a)) }\FunctionTok{return}\NormalTok{(}\ConstantTok{NULL}\NormalTok{)}
+  
+\NormalTok{  title }\OtherTok{\textless{}{-}}\NormalTok{ a }\SpecialCharTok{|\textgreater{}} \FunctionTok{html\_text2}\NormalTok{() }\SpecialCharTok{|\textgreater{}} \FunctionTok{str\_squish}\NormalTok{()}
+\NormalTok{  href }\OtherTok{\textless{}{-}}\NormalTok{ a }\SpecialCharTok{|\textgreater{}} \FunctionTok{html\_attr}\NormalTok{(}\StringTok{"href"}\NormalTok{)}
+\NormalTok{  url }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(base\_url, href)}
+
+  \FunctionTok{tibble}\NormalTok{(}\AttributeTok{date =}\NormalTok{ date, }\AttributeTok{title =}\NormalTok{ title, }\AttributeTok{url =}\NormalTok{ url)}
+\NormalTok{\})}
+
+\NormalTok{press\_df}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 20 x 3
+##    date       title                                                        url  
+##    <date>     <chr>                                                        <chr>
+##  1 2025-12-10 Van Hollen, Colleagues Introduce Bill to Protect Aid Worker~ http~
+##  2 2025-12-08 Ranking Member Merkley: Trump Administration Weaponizing U.~ http~
+##  3 2025-12-08 Van Hollen, Mfume Introduce Legislation to Designate the Mu~ http~
+##  4 2025-12-05 Van Hollen, Cassidy Announce Senate Passage of Bipartisan R~ http~
+##  5 2025-12-05 Van Hollen, Colleagues Urge Action from Trump Administratio~ http~
+##  6 2025-12-04 Van Hollen, Merkley, Kaine: No Funds for War Against Venezu~ http~
+##  7 2025-12-03 Van Hollen Joins Schiff, Vargas in Introducing Bill to Prev~ http~
+##  8 2025-12-02 Van Hollen, Cassidy, Huffman, Thompson, Scholten, James Int~ http~
+##  9 2025-12-01 Van Hollen Joins Ossoff, Colleagues in Launching Inquiry in~ http~
+## 10 2025-11-26 Van Hollen, Reed Lead Colleagues in Pressing Rubio for Acco~ http~
+## 11 2025-11-26 Van Hollen, Alsobrooks, Elfreth, Olszewski Announce $7.2 Mi~ http~
+## 12 2025-11-25 Van Hollen, Alsobrooks Announce Over $670 Million for Maryl~ http~
+## 13 2025-11-25 Van Hollen, Alsobrooks Announce Protections for BARC & Over~ http~
+## 14 2025-11-24 Van Hollen, Alsobrooks Introduce Bill to Rename Post Office~ http~
+## 15 2025-11-21 Van Hollen Joins Markey, Colleagues in Urging Trump Adminis~ http~
+## 16 2025-11-21 Maryland Congressional Delegation Announce Over $60 Million~ http~
+## 17 2025-11-21 Van Hollen Joins King, Colleagues in Introducing Bipartisan~ http~
+## 18 2025-11-20 Van Hollen, Durbin Press Bondi, Patel for Answers on Unprec~ http~
+## 19 2025-11-19 Maryland Congressional Delegation Holds Meeting to Discuss ~ http~
+## 20 2025-11-19 Van Hollen, Beyer, Raskin Introduce Legislation to Improve ~ http~
+\end{verbatim}
+
+```
+
+\end{document}
