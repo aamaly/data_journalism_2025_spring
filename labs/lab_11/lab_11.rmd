@@ -2,7 +2,10 @@
 title: "lab_11"
 author: "Aamaly Hossain"
 date: "2025-12-10"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
